@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0a0f1e; display:flex; flex-direction:column; align-items:center; padding:0; font-family:'DM Sans',sans-serif; }
+
+:root {
+  --P:  #1E3A8A;
+  --PL: #93C5FD;
+  --PD: #0F1E5A;
+  --BG: #F0F4FB;
+  --BR: #D8E2F3;
+  --DB: #080D1A;
+  --grad: linear-gradient(165deg,#0F1E5A 0%,#1E3A8A 50%,#93C5FD 100%);
+}
+
+.frame { width:100%; max-width:420px; background:#111827; border-radius:16px; overflow:hidden; box-shadow:0 28px 80px rgba(0,0,0,0.7); }
+
+/* Header */
+.hdr { display:flex; align-items:center; gap:10px; padding:11px 15px; background:#111827; border-bottom:0.5px solid rgba(255,255,255,0.07); }
+.av { width:34px; height:34px; border-radius:50%; background:var(--P); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:14px; font-weight:700; color:#fff; border:2px solid var(--PL); flex-shrink:0; }
+.hdr-handle { font-size:13px; font-weight:600; color:#fff; }
+.hdr-sub { font-size:11px; color:rgba(255,255,255,0.4); margin-top:1px; }
+.hdr-more { margin-left:auto; color:rgba(255,255,255,0.45); font-size:18px; }
+
+/* Viewport */
+.vp { width:100%; aspect-ratio:4/5; overflow:hidden; position:relative; cursor:grab; user-select:none; }
+.vp:active { cursor:grabbing; }
+.track { display:flex; height:100%; transition:transform .35s cubic-bezier(.25,.46,.45,.94); will-change:transform; }
+
+/* Slides */
+.slide { min-width:100%; height:100%; position:relative; display:flex; flex-direction:column; overflow:hidden; }
+.sl { background:var(--BG); }
+.sd { background:var(--DB); }
+.sg { background:var(--grad); }
+
+.body { flex:1; display:flex; flex-direction:column; padding:32px 36px 58px; position:relative; z-index:2; }
+.center { justify-content:center; align-items:flex-start; }
+.bot { justify-content:flex-end; }
+.centerx { align-items:center; text-align:center; }
+
+/* Tag */
+.tag { display:inline-block; font-size:9px; font-weight:600; letter-spacing:2.2px; text-transform:uppercase; margin-bottom:14px; font-family:'DM Sans',sans-serif; }
+.tp { color:var(--P); }
+.tl { color:var(--PL); }
+.tw { color:rgba(255,255,255,0.55); }
+
+/* Type */
+.serif { font-family:'Playfair Display',serif; }
+.sans { font-family:'DM Sans',sans-serif; }
+.h1 { font-size:32px; font-weight:700; line-height:1.08; letter-spacing:-.5px; }
+.h2 { font-size:27px; font-weight:700; line-height:1.1; letter-spacing:-.4px; }
+.h2i { font-size:27px; font-weight:600; font-style:italic; line-height:1.1; letter-spacing:-.3px; }
+.b { font-size:13px; font-weight:400; line-height:1.58; }
+.sm { font-size:11px; font-weight:400; line-height:1.45; }
+
+.dark { color:#0F172A; }
+.mid { color:#5A6785; }
+.wh { color:#fff; }
+.wh6 { color:rgba(255,255,255,0.6); }
+.wh4 { color:rgba(255,255,255,0.4); }
+
+/* Logo */
+.logo { display:flex; align-items:center; gap:10px; margin-bottom:28px; }
+.lc { width:38px; height:38px; border-radius:50%; background:var(--P); display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:15px; font-weight:700; color:#fff; flex-shrink:0; }
+.ln { font-size:12px; font-weight:600; letter-spacing:.6px; color:var(--P); font-family:'DM Sans',sans-serif; }
+.logo-w .lc { background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); }
+.logo-w .ln { color:rgba(255,255,255,0.8); }
+
+/* Watermark */
+.wm { position:absolute; right:-10px; bottom:40px; font-family:'Playfair Display',serif; font-size:110px; font-weight:700; color:rgba(30,58,138,0.06); letter-spacing:-4px; z-index:1; pointer-events:none; line-height:1; }
+
+/* Pills */
+.pill-s { display:inline-block; font-size:11px; padding:5px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:20px; color:#5A6785; text-decoration:line-through; margin:3px 3px 3px 0; }
+.pill { display:inline-block; font-size:11px; padding:5px 12px; background:rgba(30,58,138,0.12); border-radius:20px; color:var(--PL); margin:3px 3px 3px 0; }
+.pills { display:flex; flex-wrap:wrap; gap:0; }
+
+/* Prompt box */
+.pbox { padding:14px 16px; background:rgba(0,0,0,0.2); border-radius:10px; border:1px solid rgba(255,255,255,0.08); margin-bottom:16px; }
+
+/* Feature row light */
+.fr { display:flex; align-items:flex-start; gap:12px; padding:10px 0; border-bottom:1px solid var(--BR); }
+.fr:last-child { border-bottom:none; }
+.fi { color:var(--P); font-size:13px; width:16px; text-align:center; margin-top:2px; flex-shrink:0; }
+.fl { font-size:13px; font-weight:600; color:#0F172A; display:block; font-family:'DM Sans',sans-serif; }
+.fd { font-size:11px; color:#8A92A6; display:block; margin-top:1px; font-family:'DM Sans',sans-serif; }
+
+/* Feature row dark */
+.frd { display:flex; align-items:flex-start; gap:12px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.07); }
+.frd:last-child { border-bottom:none; }
+.fid { color:var(--PL); font-size:13px; width:16px; text-align:center; margin-top:2px; flex-shrink:0; }
+.fld { font-size:13px; font-weight:600; color:#fff; display:block; font-family:'DM Sans',sans-serif; }
+.fdd { font-size:11px; color:rgba(255,255,255,0.38); display:block; margin-top:1px; font-family:'DM Sans',sans-serif; }
+
+/* Step row */
+.sr { display:flex; align-items:flex-start; gap:14px; padding:11px 0; border-bottom:1px solid var(--BR); }
+.sr:last-child { border-bottom:none; }
+.sn { font-family:'Playfair Display',serif; font-size:24px; font-weight:300; color:var(--P); min-width:30px; line-height:1.1; }
+.stl { font-size:13px; font-weight:600; color:#0F172A; display:block; font-family:'DM Sans',sans-serif; }
+.std { font-size:11px; color:#8A92A6; display:block; margin-top:1px; font-family:'DM Sans',sans-serif; }
+
+/* CTA button */
+.cta { display:inline-flex; align-items:center; gap:8px; padding:12px 26px; background:var(--BG); color:var(--PD); font-family:'DM Sans',sans-serif; font-weight:600; font-size:13px; border-radius:28px; margin-top:22px; }
+
+/* Progress */
+.pg { position:absolute; bottom:0; left:0; right:0; padding:13px 28px 17px; z-index:10; display:flex; align-items:center; gap:10px; }
+.pt { flex:1; height:3px; border-radius:2px; overflow:hidden; }
+.pf { height:100%; border-radius:2px; transition:width .35s ease; }
+.pc { font-size:11px; font-weight:500; }
+
+/* Arrow */
+.arr { position:absolute; right:0; top:0; bottom:0; width:44px; z-index:9; display:flex; align-items:center; justify-content:center; }
+
+/* Dots row */
+.dots { display:flex; justify-content:center; gap:5px; padding:9px 0 7px; }
+.dot { width:5px; height:5px; border-radius:50%; background:rgba(255,255,255,0.18); transition:background .25s,transform .25s; }
+.dot.on { background:var(--PL); transform:scale(1.25); }
+
+/* Actions */
+.acts { display:flex; align-items:center; gap:13px; padding:9px 15px 3px; }
+.acts svg { opacity:.65; }
+.bm { margin-left:auto; }
+
+/* Caption */
+.cap { padding:5px 15px 15px; font-size:12px; line-height:1.55; color:rgba(255,255,255,0.55); font-family:'DM Sans',sans-serif; }
+.cap strong { color:#fff; }
+
+/* Decorative rule */
+.rule { width:36px; height:2px; background:var(--P); border-radius:2px; margin-bottom:18px; }
+.rule-w { width:36px; height:2px; background:rgba(255,255,255,0.35); border-radius:2px; margin-bottom:18px; }
+</style>
+</head>
+<body>
+<div class="frame">
+
+  <!-- Header -->
+  <div class="hdr">
+    <div class="av">A</div>
+    <div>
+      <div class="hdr-handle">avneet_exe</div>
+      <div class="hdr-sub">SQL · Data · Careers</div>
+    </div>
+    <div class="hdr-more">···</div>
+  </div>
+
+  <!-- Viewport -->
+  <div class="vp" id="vp">
+  <div class="track" id="track">
+
+  <!-- SLIDE 1 — Hero -->
+  <div class="slide sl">
+    <div class="body center">
+      <div class="logo">
+        <div class="lc">A</div>
+        <div class="ln">avneet_exe</div>
+      </div>
+      <div class="wm">SQL</div>
+      <span class="tag tp">SQL SKILLS</span>
+      <div class="rule"></div>
+      <div class="h1 serif dark" style="margin-bottom:14px;">Learn SQL faster<br>than 90% of people</div>
+      <div class="b sans mid" style="max-width:255px;">Most people spend months on syntax they'll never use.<br>Here's what actually works.</div>
+      <div style="display:flex;gap:6px;align-items:center;margin-top:22px;">
+        <div style="width:20px;height:2px;border-radius:2px;background:var(--P);"></div>
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--P);opacity:.35;"></div>
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--P);opacity:.15;"></div>
+      </div>
+    </div>
+    <div class="pg"><div class="pt" style="background:rgba(0,0,0,0.08);"><div class="pf" style="width:14.3%;background:var(--P);"></div></div><span class="pc" style="color:rgba(0,0,0,0.3);">1/7</span></div>
+    <div class="arr" style="background:linear-gradient(to right,transparent,rgba(0,0,0,0.05));"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="rgba(0,0,0,0.2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </div>
+
+  <!-- SLIDE 2 — Problem -->
+  <div class="slide sd">
+    <div class="body bot">
+      <span class="tag tl">THE PROBLEM</span>
+      <div class="rule-w"></div>
+      <div class="h2i serif wh" style="margin-bottom:12px;">"Why can't I write<br>a query on my own?"</div>
+      <div class="b sans wh6" style="margin-bottom:16px;">You finished three courses and still freeze on real data. That's not a you problem — it's how SQL is usually taught.</div>
+      <div class="pills">
+        <span class="pill-s">Tutorial hell</span>
+        <span class="pill-s">Memorizing syntax</span>
+        <span class="pill-s">Fake datasets</span>
+        <span class="pill-s">Learning in order</span>
+      </div>
+    </div>
+    <div class="pg"><div class="pt" style="background:rgba(255,255,255,0.1);"><div class="pf" style="width:28.6%;background:#fff;"></div></div><span class="pc" style="color:rgba(255,255,255,0.38);">2/7</span></div>
+    <div class="arr" style="background:linear-gradient(to right,transparent,rgba(255,255,255,0.06));"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="rgba(255,255,255,0.28)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </div>
+
+  <!-- SLIDE 3 — Solution -->
+  <div class="slide sg">
+    <div class="body bot">
+      <span class="tag tw">THE FIX</span>
+      <div class="rule-w"></div>
+      <div class="h2 serif wh" style="margin-bottom:14px;">Start with a question,<br>not a keyword</div>
+      <div class="pbox">
+        <div class="sm sans wh4" style="margin-bottom:6px;">Your first real query</div>
+        <div class="b sans wh" style="font-style:italic;font-size:13px;">"Which 10 customers spent the most last month?"</div>
+      </div>
+      <div class="b sans wh6">When you write SQL to answer something you actually care about, it sticks. The syntax follows the thinking — not the other way around.</div>
+    </div>
+    <div class="pg"><div class="pt" style="background:rgba(255,255,255,0.14);"><div class="pf" style="width:42.9%;background:#fff;"></div></div><span class="pc" style="color:rgba(255,255,255,0.38);">3/7</span></div>
+    <div class="arr" style="background:linear-gradient(to right,transparent,rgba(255,255,255,0.09));"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="rgba(255,255,255,0.3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </div>
+
+  <!-- SLIDE 4 — Focus areas -->
+  <div class="slide sl">
+    <div class="body bot">
+      <span class="tag tp">WHAT TO FOCUS ON</span>
+      <div class="rule"></div>
+      <div class="h2 serif dark" style="margin-bottom:16px;">The 20% that covers<br>80% of real work</div>
+      <div>
+        <div class="fr">
+          <div class="fi">▸</div>
+          <div><span class="fl">SELECT · WHERE · ORDER BY</span><span class="fd">Get data, filter it, sort it. That's 60% of the job.</span></div>
+        </div>
+        <div class="fr">
+          <div class="fi">▸</div>
+          <div><span class="fl">GROUP BY + aggregates</span><span class="fd">COUNT, SUM, AVG — the core of any analysis.</span></div>
+        </div>
+        <div class="fr">
+          <div class="fi">▸</div>
+          <div><span class="fl">INNER and LEFT JOIN</span><span class="fd">Skip FULL OUTER and CROSS. Most people never touch them.</span></div>
+        </div>
+        <div class="fr">
+          <div class="fi">▸</div>
+          <div><span class="fl">Subqueries</span><span class="fd">Scary name. Simple idea. A query inside a query.</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="pg"><div class="pt" style="background:rgba(0,0,0,0.08);"><div class="pf" style="width:57.1%;background:var(--P);"></div></div><span class="pc" style="color:rgba(0,0,0,0.3);">4/7</span></div>
+    <div class="arr" style="background:linear-gradient(to right,transparent,rgba(0,0,0,0.05));"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="rgba(0,0,0,0.2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </div>
+
+  <!-- SLIDE 5 — Practice smarter -->
+  <div class="slide sd">
+    <div class="body bot">
+      <span class="tag tl">PRACTICE SMARTER</span>
+      <div class="rule-w"></div>
+      <div class="h2 serif wh" style="margin-bottom:12px;">Use real, messy data<br>from day one</div>
+      <div class="b sans wh6" style="margin-bottom:14px;">Clean tutorial data doesn't prepare you for actual work. Real databases have nulls, duplicates, and weird edge cases that tutorials skip.</div>
+      <div class="pills" style="margin-bottom:14px;">
+        <span class="pill">Kaggle datasets</span>
+        <span class="pill">Mode Analytics</span>
+        <span class="pill">Your Spotify export</span>
+      </div>
+      <div class="b sans wh6">Export your own data. You'll stay curious because the answers actually matter to you.</div>
+    </div>
+    <div class="pg"><div class="pt" style="background:rgba(255,255,255,0.1);"><div class="pf" style="width:71.4%;background:#fff;"></div></div><span class="pc" style="color:rgba(255,255,255,0.38);">5/7</span></div>
+    <div class="arr" style="background:linear-gradient(to right,transparent,rgba(255,255,255,0.06));"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="rgba(255,255,255,0.28)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </div>
+
+  <!-- SLIDE 6 — 4-week plan -->
+  <div class="slide sl">
+    <div class="body bot">
+      <span class="tag tp">THE SYSTEM</span>
+      <div class="rule"></div>
+      <div class="h2 serif dark" style="margin-bottom:16px;">The 4-week plan<br>that actually works</div>
+      <div>
+        <div class="sr">
+          <div class="sn">01</div>
+          <div><span class="stl">Week 1 — SELECT on one table</span><span class="std">Filter, sort, count. No joins yet. Just get comfortable querying.</span></div>
+        </div>
+        <div class="sr">
+          <div class="sn">02</div>
+          <div><span class="stl">Week 2 — Aggregate and group</span><span class="std">Answer "how many" and "how much" questions with GROUP BY.</span></div>
+        </div>
+        <div class="sr">
+          <div class="sn">03</div>
+          <div><span class="stl">Week 3 — Join two tables</span><span class="std">INNER and LEFT JOIN only. Connect your data like it's meant to be read.</span></div>
+        </div>
+        <div class="sr">
+          <div class="sn">04</div>
+          <div><span class="stl">Week 4 — Build something</span><span class="std">A mini dashboard. A personal project. Something you can show.</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="pg"><div class="pt" style="background:rgba(0,0,0,0.08);"><div class="pf" style="width:85.7%;background:var(--P);"></div></div><span class="pc" style="color:rgba(0,0,0,0.3);">6/7</span></div>
+    <div class="arr" style="background:linear-gradient(to right,transparent,rgba(0,0,0,0.05));"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="rgba(0,0,0,0.2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+  </div>
+
+  <!-- SLIDE 7 — CTA -->
+  <div class="slide sg">
+    <div class="body center centerx" style="padding:32px 36px 58px;">
+      <div class="logo logo-w" style="justify-content:center;margin-bottom:20px;">
+        <div class="lc">A</div>
+        <div class="ln">avneet_exe</div>
+      </div>
+      <span class="tag tw">GET STARTED</span>
+      <div class="rule-w" style="margin:0 auto 18px;"></div>
+      <div class="h2i serif wh" style="margin-bottom:12px;">One query a day.<br>Four weeks. That's it.</div>
+      <div class="b sans wh6" style="max-width:235px;margin:0 auto;">You don't need a bootcamp. You need a question you want to answer.</div>
+      <div class="cta sans">Follow for daily SQL tips →</div>
+    </div>
+    <div class="pg"><div class="pt" style="background:rgba(255,255,255,0.14);"><div class="pf" style="width:100%;background:#fff;"></div></div><span class="pc" style="color:rgba(255,255,255,0.38);">7/7</span></div>
+  </div>
+
+  </div><!-- /track -->
+  </div><!-- /vp -->
+
+  <!-- Dots -->
+  <div class="dots" id="dots">
+    <div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+    <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+  </div>
+
+  <!-- Actions -->
+  <div class="acts">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    <svg class="bm" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+  </div>
+
+  <!-- Caption -->
+  <div class="cap"><strong>avneet_exe</strong> &nbsp;The fastest way to learn SQL isn't a course. It's a question you actually want answered. Swipe for the full system. 🗂️<br><span style="color:rgba(255,255,255,0.28);font-size:11px;margin-top:3px;display:block;">2 HOURS AGO</span></div>
+
+</div>
+
+<script>
+const track = document.getElementById('track');
+const vp = document.getElementById('vp');
+const dotEls = document.querySelectorAll('.dot');
+const total = 7;
+let cur = 0, sx = 0, drag = false, delta = 0;
+
+function go(n) {
+  cur = Math.max(0, Math.min(total-1, n));
+  track.style.transform = `translateX(-${cur*100}%)`;
+  dotEls.forEach((d,i) => d.classList.toggle('on', i===cur));
+}
+
+vp.addEventListener('mousedown', e => { sx=e.clientX; drag=true; track.style.transition='none'; });
+vp.addEventListener('touchstart', e => { sx=e.touches[0].clientX; drag=true; track.style.transition='none'; }, {passive:true});
+vp.addEventListener('mousemove', e => { if(!drag) return; delta=e.clientX-sx; track.style.transform=`translateX(calc(-${cur*100}% + ${delta}px))`; });
+vp.addEventListener('touchmove', e => { if(!drag) return; delta=e.touches[0].clientX-sx; track.style.transform=`translateX(calc(-${cur*100}% + ${delta}px))`; }, {passive:true});
+function end() { if(!drag) return; drag=false; track.style.transition='transform .35s cubic-bezier(.25,.46,.45,.94)'; if(delta<-50) go(cur+1); else if(delta>50) go(cur-1); else go(cur); delta=0; }
+vp.addEventListener('mouseup', end);
+vp.addEventListener('mouseleave', end);
+vp.addEventListener('touchend', end);
+</script>
+</body>
+</html>
